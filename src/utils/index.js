@@ -56,16 +56,16 @@ export function getTimeframe(timeWindow) {
 export function getPoolLink(token0Address, token1Address = null, remove = false) {
   if (!token1Address) {
     return (
-      `https://uniswap.exchange/` +
+      `https://bscswap.com/#/` +
       (remove ? `remove` : `add`) +
-      `/${token0Address === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ? 'ETH' : token0Address}/${'ETH'}`
+      `/${token0Address === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c' ? 'BNB' : token0Address}/${'BNB'}`
     )
   } else {
     return (
-      `https://uniswap.exchange/` +
+      `https://bscswap.com/#/` +
       (remove ? `remove` : `add`) +
-      `/${token0Address === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ? 'ETH' : token0Address}/${
-        token1Address === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ? 'ETH' : token1Address
+      `/${token0Address === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c' ? 'BNB' : token0Address}/${
+        token1Address === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c' ? 'BNB' : token1Address
       }`
     )
   }
@@ -73,11 +73,11 @@ export function getPoolLink(token0Address, token1Address = null, remove = false)
 
 export function getSwapLink(token0Address, token1Address = null) {
   if (!token1Address) {
-    return `https://uniswap.exchange/swap?inputCurrency=${token0Address}`
+    return `https://bscswap.com/#/swap?inputCurrency=${token0Address}`
   } else {
-    return `https://uniswap.exchange/swap?inputCurrency=${
-      token0Address === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ? 'ETH' : token0Address
-    }&outputCurrency=${token1Address === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' ? 'ETH' : token1Address}`
+    return `https://bscswap.com/#/swap?inputCurrency=${
+      token0Address === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c' ? 'BNB' : token0Address
+    }&outputCurrency=${token1Address === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c' ? 'BNB' : token1Address}`
   }
 }
 
@@ -247,24 +247,24 @@ export async function getShareValueOverTime(pairAddress, timestamps) {
         reserve0: result.data[row].reserve0,
         reserve1: result.data[row].reserve1,
         reserveUSD: result.data[row].reserveUSD,
-        token0DerivedETH: result.data[row].token0.derivedETH,
-        token1DerivedETH: result.data[row].token1.derivedETH,
+        token0DerivedBNB: result.data[row].token0.derivedBNB,
+        token1DerivedBNB: result.data[row].token1.derivedBNB,
         roiUsd: values && values[0] ? sharePriceUsd / values[0]['sharePriceUsd'] : 1,
-        ethPrice: 0,
+        bnbPrice: 0,
         token0PriceUSD: 0,
         token1PriceUSD: 0
       })
     }
   }
 
-  // add eth prices
+  // add bnb prices
   let index = 0
   for (var brow in result?.data) {
     let timestamp = brow.split('b')[1]
     if (timestamp) {
-      values[index].ethPrice = result.data[brow].ethPrice
-      values[index].token0PriceUSD = result.data[brow].ethPrice * values[index].token0DerivedETH
-      values[index].token1PriceUSD = result.data[brow].ethPrice * values[index].token1DerivedETH
+      values[index].bnbPrice = result.data[brow].bnbPrice
+      values[index].token0PriceUSD = result.data[brow].bnbPrice * values[index].token0DerivedBNB
+      values[index].token1PriceUSD = result.data[brow].bnbPrice * values[index].token1DerivedBNB
       index += 1
     }
   }
@@ -306,10 +306,10 @@ export const setThemeColor = theme => document.documentElement.style.setProperty
 export const Big = number => new BigNumber(number)
 
 export const urls = {
-  showTransaction: tx => `https://etherscan.io/tx/${tx}/`,
-  showAddress: address => `https://www.etherscan.io/address/${address}/`,
-  showToken: address => `https://www.etherscan.io/token/${address}/`,
-  showBlock: block => `https://etherscan.io/block/${block}/`
+  showTransaction: tx => `https://bscscan.com/tx/${tx}/`,
+  showAddress: address => `https://www.bscscan.com/address/${address}/`,
+  showToken: address => `https://www.bscscan.com/token/${address}/`,
+  showBlock: block => `https://bscscan.com/block/${block}/`
 }
 
 export const formatTime = unix => {

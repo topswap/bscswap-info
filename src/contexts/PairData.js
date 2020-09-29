@@ -11,7 +11,7 @@ import {
   HOURLY_PAIR_RATES
 } from '../apollo/queries'
 
-import { useEthPrice } from './GlobalData'
+import { useBnbPrice } from './GlobalData'
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -176,7 +176,7 @@ export default function Provider({ children }) {
   )
 }
 
-async function getBulkPairData(pairList, ethPrice) {
+async function getBulkPairData(pairList, bnbPrice) {
   const [t1, t2, tWeek] = getTimestampsForChanges()
   let [{ number: b1 }, { number: b2 }, { number: bWeek }] = await getBlocksFromTimestamps([t1, t2, tWeek])
 
@@ -239,7 +239,7 @@ async function getBulkPairData(pairList, ethPrice) {
             })
             oneWeekHistory = newData.data.pairs[0]
           }
-          data = parseData(data, oneDayHistory, twoDayHistory, oneWeekHistory, ethPrice, b1)
+          data = parseData(data, oneDayHistory, twoDayHistory, oneWeekHistory, bnbPrice, b1)
           return data
         })
     )
@@ -249,7 +249,7 @@ async function getBulkPairData(pairList, ethPrice) {
   }
 }
 
-function parseData(data, oneDayData, twoDayData, oneWeekData, ethPrice, oneDayBlock) {
+function parseData(data, oneDayData, twoDayData, oneWeekData, bnbPrice, oneDayBlock) {
   // get volume changes
   const [oneDayVolumeUSD, volumeChangeUSD] = get2DayPercentChange(
     data?.volumeUSD,
@@ -271,7 +271,7 @@ function parseData(data, oneDayData, twoDayData, oneWeekData, ethPrice, oneDayBl
   data.volumeChangeUntracked = volumeChangeUntracked
 
   // set liquiditry properties
-  data.trackedReserveUSD = data.trackedReserveETH * ethPrice
+  data.trackedReserveUSD = data.trackedReserveBNB * bnbPrice
   data.liquidityChangeUSD = getPercentChange(data.reserveUSD, oneDayData?.reserveUSD)
 
   // format if pair hasnt existed for a day or a week
@@ -284,13 +284,13 @@ function parseData(data, oneDayData, twoDayData, oneWeekData, ethPrice, oneDayBl
   if (!oneWeekData && data) {
     data.oneWeekVolumeUSD = parseFloat(data.volumeUSD)
   }
-  if (data?.token0?.id === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2') {
-    data.token0.name = 'Ether (Wrapped)'
-    data.token0.symbol = 'ETH'
+  if (data?.token0?.id === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c') {
+    data.token0.name = 'BNB (Wrapped)'
+    data.token0.symbol = 'BNB'
   }
-  if (data?.token1?.id === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2') {
-    data.token1.name = 'Ether (Wrapped)'
-    data.token1.symbol = 'ETH'
+  if (data?.token1?.id === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c') {
+    data.token1.name = 'BNB (Wrapped)'
+    data.token1.symbol = 'BNB'
   }
   return data
 }
@@ -418,7 +418,7 @@ const getHourlyRateData = async (pairAddress, startTime, latestBlock) => {
 
     const result = await splitQuery(HOURLY_PAIR_RATES, client, [pairAddress], blocks, 100)
 
-    // format token ETH price results
+    // format token BNB price results
     let values = []
     for (var row in result) {
       let timestamp = row.split('t')[1]
@@ -457,7 +457,7 @@ const getHourlyRateData = async (pairAddress, startTime, latestBlock) => {
 
 export function Updater() {
   const [, { updateTopPairs }] = usePairDataContext()
-  const [ethPrice] = useEthPrice()
+  const [bnbPrice] = useBnbPrice()
   useEffect(() => {
     async function getData() {
       // get top pairs by reserves
@@ -474,11 +474,11 @@ export function Updater() {
       })
 
       // get data for every pair in list
-      let topPairs = await getBulkPairData(formattedPairs, ethPrice)
+      let topPairs = await getBulkPairData(formattedPairs, bnbPrice)
       topPairs && updateTopPairs(topPairs)
     }
-    ethPrice && getData()
-  }, [ethPrice, updateTopPairs])
+    bnbPrice && getData()
+  }, [bnbPrice, updateTopPairs])
   return null
 }
 
@@ -516,7 +516,7 @@ export function useHourlyRateData(pairAddress, timeWindow) {
  */
 export function useDataForList(pairList) {
   const [state] = usePairDataContext()
-  const [ethPrice] = useEthPrice()
+  const [bnbPrice] = useBnbPrice()
 
   const [stale, setStale] = useState(false)
   const [fetched, setFetched] = useState([])
@@ -547,15 +547,15 @@ export function useDataForList(pairList) {
         unfetched.map(pair => {
           return pair
         }),
-        ethPrice
+        bnbPrice
       )
       setFetched(newFetched.concat(newPairData))
     }
-    if (ethPrice && pairList && pairList.length > 0 && !fetched && !stale) {
+    if (bnbPrice && pairList && pairList.length > 0 && !fetched && !stale) {
       setStale(true)
       fetchNewPairData()
     }
-  }, [ethPrice, state, pairList, stale, fetched])
+  }, [bnbPrice, state, pairList, stale, fetched])
 
   let formattedFetch =
     fetched &&
@@ -571,20 +571,20 @@ export function useDataForList(pairList) {
  */
 export function usePairData(pairAddress) {
   const [state, { update }] = usePairDataContext()
-  const [ethPrice] = useEthPrice()
+  const [bnbPrice] = useBnbPrice()
   const pairData = state?.[pairAddress]
 
   useEffect(() => {
     async function fetchData() {
       if (!pairData && pairAddress) {
-        let data = await getBulkPairData([pairAddress], ethPrice)
+        let data = await getBulkPairData([pairAddress], bnbPrice)
         data && update(pairAddress, data[0])
       }
     }
-    if (!pairData && pairAddress && ethPrice && isAddress(pairAddress)) {
+    if (!pairData && pairAddress && bnbPrice && isAddress(pairAddress)) {
       fetchData()
     }
-  }, [pairAddress, pairData, update, ethPrice])
+  }, [pairAddress, pairData, update, bnbPrice])
 
   return pairData || {}
 }
@@ -624,7 +624,7 @@ export function usePairChartData(pairAddress) {
 }
 
 /**
- * Get list of all pairs in Uniswap
+ * Get list of all pairs in Bscswap
  */
 export function useAllPairData() {
   const [state] = usePairDataContext()

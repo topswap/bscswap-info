@@ -11,7 +11,7 @@ export const priceOverrides = [
 interface ReturnMetrics {
   hodleReturn: number // difference in asset values t0 -> t1 with t0 deposit amounts
   netReturn: number // net return from t0 -> t1
-  uniswapReturn: number // netReturn - hodlReturn
+  bscswapReturn: number // netReturn - hodlReturn
   impLoss: number
   fees: number
 }
@@ -28,7 +28,7 @@ interface Position {
   token1PriceUSD: number
 }
 
-const PRICE_DISCOVERY_START_TIMESTAMP = 1589747086
+const PRICE_DISCOVERY_START_TIMESTAMP = 1600046353
 
 function formatPricesForEarlyTimestamps(position): Position {
   if (position.timestamp < PRICE_DISCOVERY_START_TIMESTAMP) {
@@ -38,12 +38,12 @@ function formatPricesForEarlyTimestamps(position): Position {
     if (priceOverrides.includes(position?.pair?.token1.id)) {
       position.token1PriceUSD = 1
     }
-    // WETH price
-    if (position.pair?.token0.id === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2') {
-      position.token0PriceUSD = 203
+    // WBNB price
+    if (position.pair?.token0.id === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c') {
+      position.token0PriceUSD = 30
     }
-    if (position.pair?.token1.id === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2') {
-      position.token1PriceUSD = 203
+    if (position.pair?.token1.id === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c') {
+      position.token1PriceUSD = 30
     }
   }
   return position
@@ -141,7 +141,7 @@ export function getMetricsForPositionWindow(positionT0: Position, positionT1: Po
   const assetValueT1 = token0_amount_t0 * positionT1.token0PriceUSD + token1_amount_t0 * positionT1.token1PriceUSD
 
   const imp_loss_usd = no_fees_usd - assetValueT1
-  const uniswap_return = difference_fees_usd + imp_loss_usd
+  const bscswap_return = difference_fees_usd + imp_loss_usd
 
   // get net value change for combined data
   const netValueT0 = t0Ownership * positionT0.reserveUSD
@@ -150,7 +150,7 @@ export function getMetricsForPositionWindow(positionT0: Position, positionT1: Po
   return {
     hodleReturn: assetValueT1 - assetValueT0,
     netReturn: netValueT1 - netValueT0,
-    uniswapReturn: uniswap_return,
+    bscswapReturn: bscswap_return,
     impLoss: imp_loss_usd,
     fees: difference_fees_usd
   }
@@ -161,9 +161,9 @@ export function getMetricsForPositionWindow(positionT0: Position, positionT1: Po
  * @param startDateTimestamp // day to start tracking at
  * @param currentPairData // current stat of the pair
  * @param pairSnapshots // history of entries and exits for lp on this pair
- * @param currentETHPrice // current price of eth used for usd conversions
+ * @param currentBNBPrice // current price of bnb used for usd conversions
  */
-export async function getHistoricalPairReturns(startDateTimestamp, currentPairData, pairSnapshots, currentETHPrice) {
+export async function getHistoricalPairReturns(startDateTimestamp, currentPairData, pairSnapshots, currentBNBPrice) {
   // catch case where data not puplated yet
   if (!currentPairData.createdAtTimestamp) {
     return []
@@ -224,8 +224,8 @@ export async function getHistoricalPairReturns(startDateTimestamp, currentPairDa
         reserve0: currentPairData.reserve0,
         reserve1: currentPairData.reserve1,
         reserveUSD: currentPairData.reserveUSD,
-        token0PriceUSD: currentPairData.token0.derivedETH * currentETHPrice,
-        token1PriceUSD: currentPairData.token1.derivedETH * currentETHPrice
+        token0PriceUSD: currentPairData.token0.derivedBNB * currentBNBPrice,
+        token1PriceUSD: currentPairData.token1.derivedBNB * currentBNBPrice
       }
     }
 
@@ -253,14 +253,14 @@ export async function getHistoricalPairReturns(startDateTimestamp, currentPairDa
  * For a given pair and user, get the return metrics
  * @param user
  * @param pair
- * @param ethPrice
+ * @param bnbPrice
  */
-export async function getLPReturnsOnPair(user: string, pair, ethPrice: number, snapshots) {
+export async function getLPReturnsOnPair(user: string, pair, bnbPrice: number, snapshots) {
   // initialize values
   const principal = await getPrincipalForUserPerPair(user, pair.id)
   let hodlReturn = 0
   let netReturn = 0
-  let uniswapReturn = 0
+  let bscswapReturn = 0
   let fees = 0
 
   snapshots = snapshots.filter(entry => {
@@ -275,8 +275,8 @@ export async function getLPReturnsOnPair(user: string, pair, ethPrice: number, s
     reserve0: pair.reserve0,
     reserve1: pair.reserve1,
     reserveUSD: pair.reserveUSD,
-    token0PriceUSD: pair.token0.derivedETH * ethPrice,
-    token1PriceUSD: pair.token1.derivedETH * ethPrice
+    token0PriceUSD: pair.token0.derivedBNB * bnbPrice,
+    token1PriceUSD: pair.token1.derivedBNB * bnbPrice
   }
 
   for (const index in snapshots) {
@@ -287,7 +287,7 @@ export async function getLPReturnsOnPair(user: string, pair, ethPrice: number, s
     let results = getMetricsForPositionWindow(positionT0, positionT1)
     hodlReturn = hodlReturn + results.hodleReturn
     netReturn = netReturn + results.netReturn
-    uniswapReturn = uniswapReturn + results.uniswapReturn
+    bscswapReturn = bscswapReturn + results.bscswapReturn
     fees = fees + results.fees
   }
 
@@ -296,8 +296,8 @@ export async function getLPReturnsOnPair(user: string, pair, ethPrice: number, s
     net: {
       return: netReturn
     },
-    uniswap: {
-      return: uniswapReturn
+    bscswap: {
+      return: bscswapReturn
     },
     fees: {
       sum: fees

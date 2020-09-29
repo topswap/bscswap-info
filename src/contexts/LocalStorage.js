@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useReducer, useMemo, useCallback, useEffect } from 'react'
 
-const UNISWAP = 'UNISWAP'
+const BSCSWAP = 'BSCSWAP'
 
 const VERSION = 'VERSION'
 const CURRENT_VERSION = 0
@@ -44,7 +44,7 @@ function reducer(state, { type, payload }) {
 function init() {
   const defaultLocalStorage = {
     [VERSION]: CURRENT_VERSION,
-    [DARK_MODE]: true,
+    [DARK_MODE]: false,
     [DISMISSED_PATHS]: {},
     [SAVED_ACCOUNTS]: [],
     [SAVED_TOKENS]: {},
@@ -52,7 +52,7 @@ function init() {
   }
 
   try {
-    const parsed = JSON.parse(window.localStorage.getItem(UNISWAP))
+    const parsed = JSON.parse(window.localStorage.getItem(BSCSWAP))
     if (parsed[VERSION] !== CURRENT_VERSION) {
       // this is where we could run migration logic
       return defaultLocalStorage
@@ -82,7 +82,7 @@ export function Updater() {
   const [state] = useLocalStorageContext()
 
   useEffect(() => {
-    window.localStorage.setItem(UNISWAP, JSON.stringify({ ...state, [LAST_SAVED]: Math.floor(Date.now() / 1000) }))
+    window.localStorage.setItem(BSCSWAP, JSON.stringify({ ...state, [LAST_SAVED]: Math.floor(Date.now() / 1000) }))
   })
 
   return null

@@ -11,7 +11,7 @@ import DoubleTokenLogo from '../DoubleLogo'
 import { withRouter } from 'react-router-dom'
 import { formattedNum, getPoolLink } from '../../utils'
 import { AutoColumn } from '../Column'
-import { useEthPrice } from '../../contexts/GlobalData'
+import { useBnbPrice } from '../../contexts/GlobalData'
 import { RowFixed } from '../Row'
 import { ButtonLight } from '../ButtonStyled'
 import { TYPE } from '../../Theme'
@@ -45,7 +45,7 @@ const DashGrid = styled.div`
   display: grid;
   grid-gap: 1em;
   grid-template-columns: 5px 0.5fr 1fr 1fr;
-  grid-template-areas: 'number name uniswap return';
+  grid-template-areas: 'number name bscswap return';
   align-items: flex-start;
   padding: 20px 0;
 
@@ -62,17 +62,17 @@ const DashGrid = styled.div`
 
   @media screen and (min-width: 1200px) {
     grid-template-columns: 35px 2.5fr 1fr 1fr;
-    grid-template-areas: 'number name uniswap return';
+    grid-template-areas: 'number name bscswap return';
   }
 
   @media screen and (max-width: 740px) {
     grid-template-columns: 2.5fr 1fr 1fr;
-    grid-template-areas: 'name uniswap return';
+    grid-template-areas: 'name bscswap return';
   }
 
   @media screen and (max-width: 500px) {
     grid-template-columns: 2.5fr 1fr;
-    grid-template-areas: 'name uniswap';
+    grid-template-areas: 'name bscswap';
   }
 `
 
@@ -104,7 +104,7 @@ const DataText = styled(Flex)`
 
 const SORT_FIELD = {
   VALUE: 'VALUE',
-  UNISWAP_RETURN: 'UNISWAP_RETURN'
+  BSCSWAP_RETURN: 'BSCSWAP_RETURN'
 }
 
 function PositionList({ positions }) {
@@ -135,7 +135,7 @@ function PositionList({ positions }) {
     }
   }, [positions])
 
-  const [ethPrice] = useEthPrice()
+  const [bnbPrice] = useBnbPrice()
 
   const ListItem = ({ position, index }) => {
     const poolOwnership = position.liquidityTokenBalance / position.pair.totalSupply
@@ -174,7 +174,7 @@ function PositionList({ positions }) {
             </RowFixed>
           </AutoColumn>
         </DataText>
-        <DataText area="uniswap">
+        <DataText area="bscswap">
           <AutoColumn gap="12px" justify="flex-end">
             <TYPE.main>{formattedNum(valueUSD, true, true)}</TYPE.main>
             <AutoColumn gap="4px" justify="flex-end">
@@ -212,9 +212,9 @@ function PositionList({ positions }) {
               <AutoColumn gap="4px" justify="flex-end">
                 <RowFixed>
                   <TYPE.small fontWeight={400}>
-                    {parseFloat(position.pair.token0.derivedETH)
+                    {parseFloat(position.pair.token0.derivedBNB)
                       ? formattedNum(
-                          position?.fees.sum / (parseFloat(position.pair.token0.derivedETH) * ethPrice) / 2,
+                          position?.fees.sum / (parseFloat(position.pair.token0.derivedBNB) * bnbPrice) / 2,
                           false,
                           true
                         )
@@ -229,9 +229,9 @@ function PositionList({ positions }) {
                 </RowFixed>
                 <RowFixed>
                   <TYPE.small fontWeight={400}>
-                    {parseFloat(position.pair.token1.derivedETH)
+                    {parseFloat(position.pair.token1.derivedBNB)
                       ? formattedNum(
-                          position?.fees.sum / (parseFloat(position.pair.token1.derivedETH) * ethPrice) / 2,
+                          position?.fees.sum / (parseFloat(position.pair.token1.derivedBNB) * bnbPrice) / 2,
                           false,
                           true
                         )
@@ -263,8 +263,8 @@ function PositionList({ positions }) {
         if (sortedColumn === SORT_FIELD.HODL) {
           return p0?.hodl?.sum > p1?.hodl?.sum ? (sortDirection ? -1 : 1) : sortDirection ? 1 : -1
         }
-        if (sortedColumn === SORT_FIELD.UNISWAP_RETURN) {
-          return p0?.uniswap?.return > p1?.uniswap?.return ? (sortDirection ? -1 : 1) : sortDirection ? 1 : -1
+        if (sortedColumn === SORT_FIELD.BSCSWAP_RETURN) {
+          return p0?.bscswap?.return > p1?.bscswap?.return ? (sortDirection ? -1 : 1) : sortDirection ? 1 : -1
         }
         if (sortedColumn === SORT_FIELD.VALUE) {
           const bal0 = (p0.liquidityTokenBalance / p0.pair.totalSupply) * p0.pair.reserveUSD
@@ -296,7 +296,7 @@ function PositionList({ positions }) {
         </Flex>
         <Flex alignItems="center" justifyContent="flexEnd">
           <ClickableText
-            area="uniswap"
+            area="bscswap"
             onClick={e => {
               setSortedColumn(SORT_FIELD.VALUE)
               setSortDirection(sortedColumn !== SORT_FIELD.VALUE ? true : !sortDirection)
@@ -310,12 +310,12 @@ function PositionList({ positions }) {
             <ClickableText
               area="return"
               onClick={() => {
-                setSortedColumn(SORT_FIELD.UNISWAP_RETURN)
-                setSortDirection(sortedColumn !== SORT_FIELD.UNISWAP_RETURN ? true : !sortDirection)
+                setSortedColumn(SORT_FIELD.BSCSWAP_RETURN)
+                setSortDirection(sortedColumn !== SORT_FIELD.BSCSWAP_RETURN ? true : !sortDirection)
               }}
             >
               {below740 ? 'Fees' : 'Total Fees Earned'}{' '}
-              {sortedColumn === SORT_FIELD.UNISWAP_RETURN ? (!sortDirection ? '↑' : '↓') : ''}
+              {sortedColumn === SORT_FIELD.BSCSWAP_RETURN ? (!sortDirection ? '↑' : '↓') : ''}
             </ClickableText>
           </Flex>
         )}

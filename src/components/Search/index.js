@@ -10,7 +10,7 @@ import { useAllTokenData, useTokenData } from '../../contexts/TokenData'
 import { useAllPairData, usePairData } from '../../contexts/PairData'
 import DoubleTokenLogo from '../DoubleLogo'
 import { useMedia } from 'react-use'
-import { useAllPairsInUniswap, useAllTokensInUniswap } from '../../contexts/GlobalData'
+import { useAllPairsInBscswap, useAllTokensInBscswap } from '../../contexts/GlobalData'
 import { OVERVIEW_TOKEN_BLACKLIST, PAIR_BLACKLIST } from '../../constants'
 
 import { transparentize } from 'polished'
@@ -150,10 +150,10 @@ const Blue = styled.span`
 `
 
 export const Search = ({ small = false }) => {
-  let allTokens = useAllTokensInUniswap()
+  let allTokens = useAllTokensInBscswap()
   const allTokenData = useAllTokenData()
 
-  let allPairs = useAllPairsInUniswap()
+  let allPairs = useAllPairsInBscswap()
   const allPairData = useAllPairData()
 
   const [showMenu, toggleMenu] = useState(false)
@@ -314,13 +314,13 @@ export const Search = ({ small = false }) => {
           .sort((a, b) => {
             const pairA = allPairData[a.id]
             const pairB = allPairData[b.id]
-            if (pairA?.trackedReserveETH && pairB?.trackedReserveETH) {
-              return parseFloat(pairA.trackedReserveETH) > parseFloat(pairB.trackedReserveETH) ? -1 : 1
+            if (pairA?.trackedReserveBNB && pairB?.trackedReserveBNB) {
+              return parseFloat(pairA.trackedReserveBNB) > parseFloat(pairB.trackedReserveBNB) ? -1 : 1
             }
-            if (pairA?.trackedReserveETH && !pairB?.trackedReserveETH) {
+            if (pairA?.trackedReserveBNB && !pairB?.trackedReserveBNB) {
               return -1
             }
-            if (!pairA?.trackedReserveETH && pairB?.trackedReserveETH) {
+            if (!pairA?.trackedReserveBNB && pairB?.trackedReserveBNB) {
               return 1
             }
             return 0
@@ -430,10 +430,10 @@ export const Search = ({ small = false }) => {
               : below410
               ? 'Search...'
               : below470
-              ? 'Search Uniswap...'
+              ? 'Search BSCswap...'
               : below700
               ? 'Search pairs and tokens...'
-              : 'Search Uniswap pairs and tokens...'
+              : 'Search BSCswap pairs and tokens...'
           }
           value={value}
           onChange={e => {
@@ -459,13 +459,13 @@ export const Search = ({ small = false }) => {
           )}
           {filteredPairList &&
             filteredPairList.slice(0, pairsShown).map(pair => {
-              if (pair?.token0?.id === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2') {
-                pair.token0.name = 'ETH (Wrapped)'
-                pair.token0.symbol = 'ETH'
+              if (pair?.token0?.id === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c') {
+                pair.token0.name = 'BNB (Wrapped)'
+                pair.token0.symbol = 'BNB'
               }
-              if (pair?.token1.id === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2') {
-                pair.token1.name = 'ETH (Wrapped)'
-                pair.token1.symbol = 'ETH'
+              if (pair?.token1.id === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c') {
+                pair.token1.name = 'BNB (Wrapped)'
+                pair.token1.symbol = 'BNB'
               }
               return (
                 <BasicLink to={'/pair/' + pair.id} key={pair.id} onClick={onDismiss}>

@@ -5,7 +5,7 @@ import { USER_TRANSACTIONS, USER_POSITIONS, USER_HISTORY, PAIR_DAY_DATA_BULK } f
 import { useTimeframe, useStartTimestamp } from './Application'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import { useEthPrice } from './GlobalData'
+import { useBnbPrice } from './GlobalData'
 import { getLPReturnsOnPair, getHistoricalPairReturns } from '../utils/returns'
 import { timeframeOptions } from '../constants'
 
@@ -231,7 +231,7 @@ export function useUserPositionChart(position, account) {
 
   // get data needed for calculations
   const currentPairData = usePairData(pairAddress)
-  const [currentETHPrice] = useEthPrice()
+  const [currentBNBPrice] = useBnbPrice()
 
   // formatetd array to return for chart data
   const formattedHistory = state?.[account]?.[USER_PAIR_RETURNS_KEY]?.[pairAddress]
@@ -242,7 +242,7 @@ export function useUserPositionChart(position, account) {
         startDateTimestamp,
         currentPairData,
         pairSnapshots,
-        currentETHPrice
+        currentBNBPrice
       )
       updateUserPairReturns(account, pairAddress, fetchedData)
     }
@@ -254,7 +254,7 @@ export function useUserPositionChart(position, account) {
       currentPairData &&
       Object.keys(currentPairData).length > 0 &&
       pairAddress &&
-      currentETHPrice
+      currentBNBPrice
     ) {
       fetchData()
     }
@@ -265,7 +265,7 @@ export function useUserPositionChart(position, account) {
     formattedHistory,
     pairAddress,
     currentPairData,
-    currentETHPrice,
+    currentBNBPrice,
     updateUserPairReturns,
     position.pair.id
   ])
@@ -417,7 +417,7 @@ export function useUserPositions(account) {
   const positions = state?.[account]?.[POSITIONS_KEY]
 
   const snapshots = useUserSnapshots(account)
-  const [ethPrice] = useEthPrice()
+  const [bnbPrice] = useBnbPrice()
 
   useEffect(() => {
     async function fetchData(account) {
@@ -432,7 +432,7 @@ export function useUserPositions(account) {
         if (result?.data?.liquidityPositions) {
           let formattedPositions = await Promise.all(
             result?.data?.liquidityPositions.map(async positionData => {
-              const returnData = await getLPReturnsOnPair(account, positionData.pair, ethPrice, snapshots)
+              const returnData = await getLPReturnsOnPair(account, positionData.pair, bnbPrice, snapshots)
               return {
                 ...positionData,
                 ...returnData
@@ -445,10 +445,10 @@ export function useUserPositions(account) {
         console.log(e)
       }
     }
-    if (!positions && account && ethPrice && snapshots) {
+    if (!positions && account && bnbPrice && snapshots) {
       fetchData(account)
     }
-  }, [account, positions, updatePositions, ethPrice, snapshots])
+  }, [account, positions, updatePositions, bnbPrice, snapshots])
 
   return positions
 }

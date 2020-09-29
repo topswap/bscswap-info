@@ -24,37 +24,37 @@ function formatPercent(rawPercent) {
 }
 
 export default function UniPrice() {
-  const daiPair = usePairData('0xa478c2975ab1ea89e8196811f51a7b7ade33eb11')
-  const usdcPair = usePairData('0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc')
-  const usdtPair = usePairData('0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852')
+  const daiPair = usePairData('0xf3010261b58b2874639ca2e860e9005e3be5de0b')
+  const busdPair = usePairData('0x1ebf0ee99971c6269062c3b480e8e23b7a74756b')
+  const usdtPair = usePairData('0x12e048d01535e2b49675d22078f64fd2307d8a0c')
 
   const totalLiquidity = useMemo(() => {
-    return daiPair && usdcPair && usdtPair
-      ? daiPair.trackedReserveUSD + usdcPair.trackedReserveUSD + usdtPair.trackedReserveUSD
+    return daiPair && busdPair && usdtPair
+      ? daiPair.trackedReserveUSD + busdPair.trackedReserveUSD + usdtPair.trackedReserveUSD
       : 0
-  }, [daiPair, usdcPair, usdtPair])
+  }, [daiPair, busdPair, usdtPair])
 
-  const daiPerEth = daiPair ? parseFloat(daiPair.token0Price).toFixed(2) : '-'
-  const usdcPerEth = usdcPair ? parseFloat(usdcPair.token0Price).toFixed(2) : '-'
-  const usdtPerEth = usdtPair ? parseFloat(usdtPair.token1Price).toFixed(2) : '-'
+  const daiPerBnb = daiPair ? parseFloat(daiPair.token0Price).toFixed(2) : '-'
+  const busdPerBnb = busdPair ? parseFloat(busdPair.token1Price).toFixed(2) : '-'
+  const usdtPerBnb = usdtPair ? parseFloat(usdtPair.token0Price).toFixed(2) : '-'
 
   return (
     <PriceCard>
       <AutoColumn gap="10px">
         <RowFixed>
-          <TYPE.main>DAI/ETH: {formattedNum(daiPerEth, true)}</TYPE.main>
+          <TYPE.main>DAI/BNB: {formattedNum(daiPerBnb, true)}</TYPE.main>
           <TYPE.light style={{ marginLeft: '10px' }}>
             {daiPair && totalLiquidity ? formatPercent(daiPair.trackedReserveUSD / totalLiquidity) : '-'}
           </TYPE.light>
         </RowFixed>
         <RowFixed>
-          <TYPE.main>USDC/ETH: {formattedNum(usdcPerEth, true)}</TYPE.main>
+          <TYPE.main>BUSD/BNB: {formattedNum(busdPerBnb, true)}</TYPE.main>
           <TYPE.light style={{ marginLeft: '10px' }}>
-            {usdcPair && totalLiquidity ? formatPercent(usdcPair.trackedReserveUSD / totalLiquidity) : '-'}
+            {busdPair && totalLiquidity ? formatPercent(busdPair.trackedReserveUSD / totalLiquidity) : '-'}
           </TYPE.light>
         </RowFixed>
         <RowFixed>
-          <TYPE.main>USDT/ETH: {formattedNum(usdtPerEth, true)}</TYPE.main>
+          <TYPE.main>USDT/BNB: {formattedNum(usdtPerBnb, true)}</TYPE.main>
           <TYPE.light style={{ marginLeft: '10px' }}>
             {usdtPair && totalLiquidity ? formatPercent(usdtPair.trackedReserveUSD / totalLiquidity) : '-'}
           </TYPE.light>

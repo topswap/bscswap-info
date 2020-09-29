@@ -279,12 +279,12 @@ function TxnList({ transactions, symbol0Override, symbol1Override, color }) {
   const below780 = useMedia('(max-width: 780px)')
 
   const ListItem = ({ item }) => {
-    if (item.token0Symbol === 'WETH') {
-      item.token0Symbol = 'ETH'
+    if (item.token0Symbol === 'WBNB') {
+      item.token0Symbol = 'BNB'
     }
 
-    if (item.token1Symbol === 'WETH') {
-      item.token1Symbol = 'ETH'
+    if (item.token1Symbol === 'WBNB') {
+      item.token1Symbol = 'BNB'
     }
 
     return (
@@ -295,7 +295,7 @@ function TxnList({ transactions, symbol0Override, symbol1Override, color }) {
           </Link>
         </DataText>
         <DataText area="value">
-          {currency === 'ETH' ? 'Ξ ' + formattedNum(item.valueETH) : formattedNum(item.amountUSD, true)}
+          {currency === 'BNB' ? 'B ' + formattedNum(item.valueBNB) : formattedNum(item.amountUSD, true)}
         </DataText>
         {!below780 && (
           <>
@@ -311,7 +311,7 @@ function TxnList({ transactions, symbol0Override, symbol1Override, color }) {
         )}
         {!below1080 && (
           <DataText area="account">
-            <Link color={color} external href={'https://etherscan.io/address/' + item.account}>
+            <Link color={color} external href={'https://bscscan.com/address/' + item.account}>
               {item.account && item.account.slice(0, 6) + '...' + item.account.slice(38, 42)}
             </Link>
           </DataText>

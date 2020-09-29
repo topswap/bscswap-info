@@ -10,7 +10,7 @@ import {
   PRICES_BY_BLOCK
 } from '../apollo/queries'
 
-import { useEthPrice } from './GlobalData'
+import { useBnbPrice } from './GlobalData'
 
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -190,7 +190,7 @@ export default function Provider({ children }) {
   )
 }
 
-const getTopTokens = async (ethPrice, ethPriceOld) => {
+const getTopTokens = async (bnbPrice, bnbPriceOld) => {
   const utcCurrentTime = dayjs()
   const utcOneDayBack = utcCurrentTime.subtract(1, 'day').unix()
   const utcTwoDaysBack = utcCurrentTime.subtract(2, 'day').unix()
@@ -260,17 +260,17 @@ const getTopTokens = async (ethPrice, ethPriceOld) => {
             twoDayHistory?.txCount ?? 0
           )
 
-          const currentLiquidityUSD = data?.totalLiquidity * ethPrice * data?.derivedETH
-          const oldLiquidityUSD = oneDayHistory?.totalLiquidity * ethPriceOld * oneDayHistory?.derivedETH
+          const currentLiquidityUSD = data?.totalLiquidity * bnbPrice * data?.derivedBNB
+          const oldLiquidityUSD = oneDayHistory?.totalLiquidity * bnbPriceOld * oneDayHistory?.derivedBNB
 
           // percent changes
           const priceChangeUSD = getPercentChange(
-            data?.derivedETH * ethPrice,
-            oneDayHistory?.derivedETH ? oneDayHistory?.derivedETH * ethPriceOld : 0
+            data?.derivedBNB * bnbPrice,
+            oneDayHistory?.derivedBNB ? oneDayHistory?.derivedBNB * bnbPriceOld : 0
           )
 
           // set data
-          data.priceUSD = data?.derivedETH * ethPrice
+          data.priceUSD = data?.derivedBNB * bnbPrice
           data.totalLiquidityUSD = currentLiquidityUSD
           data.oneDayVolumeUSD = parseFloat(oneDayVolumeUSD)
           data.volumeChangeUSD = volumeChangeUSD
@@ -282,13 +282,13 @@ const getTopTokens = async (ethPrice, ethPriceOld) => {
           // new tokens
           if (!oneDayHistory && data) {
             data.oneDayVolumeUSD = data.tradeVolumeUSD
-            data.oneDayVolumeETH = data.tradeVolume * data.derivedETH
+            data.oneDayVolumeBNB = data.tradeVolume * data.derivedBNB
             data.oneDayTxns = data.txCount
           }
 
-          if (data.id === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2') {
-            data.name = 'Ether (Wrapped)'
-            data.symbol = 'ETH'
+          if (data.id === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c') {
+            data.name = 'BNB (Wrapped)'
+            data.symbol = 'BNB'
           }
           return data
         })
@@ -302,7 +302,7 @@ const getTopTokens = async (ethPrice, ethPriceOld) => {
   }
 }
 
-const getTokenData = async (address, ethPrice, ethPriceOld) => {
+const getTokenData = async (address, bnbPrice, bnbPriceOld) => {
   const utcCurrentTime = dayjs()
   const utcOneDayBack = utcCurrentTime
     .subtract(1, 'day')
@@ -380,15 +380,15 @@ const getTokenData = async (address, ethPrice, ethPriceOld) => {
     )
 
     const priceChangeUSD = getPercentChange(
-      data?.derivedETH * ethPrice,
-      parseFloat(oneDayData?.derivedETH ?? 0) * ethPriceOld
+      data?.derivedBNB * bnbPrice,
+      parseFloat(oneDayData?.derivedBNB ?? 0) * bnbPriceOld
     )
 
-    const currentLiquidityUSD = data?.totalLiquidity * ethPrice * data?.derivedETH
-    const oldLiquidityUSD = oneDayData?.totalLiquidity * ethPriceOld * oneDayData?.derivedETH
+    const currentLiquidityUSD = data?.totalLiquidity * bnbPrice * data?.derivedBNB
+    const oldLiquidityUSD = oneDayData?.totalLiquidity * bnbPriceOld * oneDayData?.derivedBNB
 
     // set data
-    data.priceUSD = data?.derivedETH * ethPrice
+    data.priceUSD = data?.derivedBNB * bnbPrice
     data.totalLiquidityUSD = currentLiquidityUSD
     data.oneDayVolumeUSD = oneDayVolumeUSD
     data.volumeChangeUSD = volumeChangeUSD
@@ -403,14 +403,14 @@ const getTokenData = async (address, ethPrice, ethPriceOld) => {
     // new tokens
     if (!oneDayData && data) {
       data.oneDayVolumeUSD = data.tradeVolumeUSD
-      data.oneDayVolumeETH = data.tradeVolume * data.derivedETH
+      data.oneDayVolumeBNB = data.tradeVolume * data.derivedBNB
       data.oneDayTxns = data.txCount
     }
 
-    // fix for WETH
-    if (data.id === '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2') {
-      data.name = 'ETH (Wrapped)'
-      data.symbol = 'ETH'
+    // fix for WBNB
+    if (data.id === '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c') {
+      data.name = 'BNB (Wrapped)'
+      data.symbol = 'BNB'
     }
   } catch (e) {
     console.log(e)
@@ -485,25 +485,25 @@ const getIntervalTokenData = async (tokenAddress, startTime, interval = 3600, la
 
     let result = await splitQuery(PRICES_BY_BLOCK, client, [tokenAddress], blocks, 50)
 
-    // format token ETH price results
+    // format token BNB price results
     let values = []
     for (var row in result) {
       let timestamp = row.split('t')[1]
-      let derivedETH = parseFloat(result[row]?.derivedETH)
+      let derivedBNB = parseFloat(result[row]?.derivedBNB)
       if (timestamp) {
         values.push({
           timestamp,
-          derivedETH
+          derivedBNB
         })
       }
     }
 
-    // go through eth usd prices and assign to original values array
+    // go through bnb usd prices and assign to original values array
     let index = 0
     for (var brow in result) {
       let timestamp = brow.split('b')[1]
       if (timestamp) {
-        values[index].priceUSD = result[brow].ethPrice * values[index].derivedETH
+        values[index].priceUSD = result[brow].bnbPrice * values[index].derivedBNB
         index += 1
       }
     }
@@ -597,30 +597,30 @@ const getTokenChartData = async tokenAddress => {
 
 export function Updater() {
   const [, { updateTopTokens }] = useTokenDataContext()
-  const [ethPrice, ethPriceOld] = useEthPrice()
+  const [bnbPrice, bnbPriceOld] = useBnbPrice()
   useEffect(() => {
     async function getData() {
       // get top pairs for overview list
-      let topTokens = await getTopTokens(ethPrice, ethPriceOld)
+      let topTokens = await getTopTokens(bnbPrice, bnbPriceOld)
       topTokens && updateTopTokens(topTokens)
     }
-    ethPrice && ethPriceOld && getData()
-  }, [ethPrice, ethPriceOld, updateTopTokens])
+    bnbPrice && bnbPriceOld && getData()
+  }, [bnbPrice, bnbPriceOld, updateTopTokens])
   return null
 }
 
 export function useTokenData(tokenAddress) {
   const [state, { update }] = useTokenDataContext()
-  const [ethPrice, ethPriceOld] = useEthPrice()
+  const [bnbPrice, bnbPriceOld] = useBnbPrice()
   const tokenData = state?.[tokenAddress]
 
   useEffect(() => {
-    if (!tokenData && ethPrice && ethPriceOld && isAddress(tokenAddress)) {
-      getTokenData(tokenAddress, ethPrice, ethPriceOld).then(data => {
+    if (!tokenData && bnbPrice && bnbPriceOld && isAddress(tokenAddress)) {
+      getTokenData(tokenAddress, bnbPrice, bnbPriceOld).then(data => {
         update(tokenAddress, data)
       })
     }
-  }, [ethPrice, ethPriceOld, tokenAddress, tokenData, update])
+  }, [bnbPrice, bnbPriceOld, tokenAddress, tokenData, update])
 
   return tokenData || {}
 }
