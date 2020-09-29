@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router-dom'
+import { Text } from 'rebass'
 import 'feather-icons'
 import styled from 'styled-components'
 import Panel from '../components/Panel'
@@ -13,7 +14,7 @@ import TxnList from '../components/TxnList'
 import Loader from '../components/LocalLoader'
 import { BasicLink } from '../components/Link'
 import Search from '../components/Search'
-import { formattedNum, formattedPercent, getPoolLink, getSwapLink } from '../utils'
+import { formattedNum, formattedPercent, getPoolLink, getAstroLink, getSwapLink } from '../utils'
 import { useColor } from '../hooks'
 import { usePairData, usePairTransactions } from '../contexts/PairData'
 import { TYPE, ThemedBackground } from '../Theme'
@@ -211,9 +212,21 @@ function PairPage({ pairAddress, history }) {
       />
       <ContentWrapperLarge>
         <RowBetween>
+        <AutoRow align="flex-end" style={{ width: 'fit-content' }}>
           <TYPE.body>
             <BasicLink to="/pairs">{'Pairs '}</BasicLink>→ {token0?.symbol}-{token1?.symbol}
           </TYPE.body>
+          <Link
+            style={{ width: 'fit-content' }}
+            color={backgroundColor}
+            external
+            href={'https://bscscan.com/address/' + pairAddress}
+          >
+            <Text style={{ marginLeft: '.15rem' }} fontSize={'14px'} fontWeight={400}>
+              ({pairAddress.slice(0, 8) + '...' + pairAddress.slice(36, 42)})
+            </Text>
+          </Link>
+          </AutoRow>
           {!below600 && <Search small={true} />}
         </RowBetween>
         <WarningGrouping
@@ -270,6 +283,11 @@ function PairPage({ pairAddress, history }) {
                   <Link external href={getSwapLink(token0?.id, token1?.id)}>
                     <ButtonDark ml={!below1080 && '.5rem'} mr={below1080 && '.5rem'} color={backgroundColor}>
                       Trade
+                    </ButtonDark>
+                  </Link>
+                  <Link href={getAstroLink(pairAddress)} target="_blank">
+                    <ButtonDark ml={'.5rem'} mr={below1080 && '.5rem'} color={backgroundColor}>
+                      AstroTools
                     </ButtonDark>
                   </Link>
                 </RowFixed>

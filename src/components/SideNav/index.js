@@ -184,6 +184,11 @@ function SideNav({ history }) {
               </Link>
             </HeaderText>
             <HeaderText>
+              <Link href="https://app.astrotools.io/bsc-tokens-explorer" target="_blank">
+                AstroTools.io
+              </Link>
+            </HeaderText>
+            <HeaderText>
               <Link href="https://coinmarketcap.com/exchanges/bscswap" target="_blank">
                 CoinMarketCap
               </Link>

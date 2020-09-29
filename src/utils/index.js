@@ -81,6 +81,10 @@ export function getSwapLink(token0Address, token1Address = null) {
   }
 }
 
+export function getAstroLink(pairAddress) {
+  return `https://app.astrotools.io/bsc-pair-explorer/${pairAddress}`
+}
+
 export function localNumber(val) {
   return Numeral(val).format('0,0')
 }
