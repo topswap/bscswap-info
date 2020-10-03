@@ -44,6 +44,7 @@ export default function Warning({ type, show, setShow, address }) {
       <Text fontWeight={500} lineHeight={'145.23%'} mt={'10px'}>
         Similar to BscScan, this site automatically tracks analytics for all BEP20 tokens independent of token
         integrity. Please do your own research before interacting with any BEP20 token.
+        If you have just created a token, feel free to add your token info on https://forms.gle/DgMuQsYHiw14uBiVA.
       </Text>
     </div>
   ) : (
@@ -52,6 +53,7 @@ export default function Warning({ type, show, setShow, address }) {
       tokens that claim to represent projects that do not have a token. Similar to BscScan, this site automatically
       tracks analytics for all BEP20 tokens independent of token integrity. Please do your own research before
       interacting with any BEP20 token.
+      If you have just created a token, feel free to add your token info on https://forms.gle/DgMuQsYHiw14uBiVA.
     </Text>
   )
 
@@ -72,10 +74,10 @@ export default function Warning({ type, show, setShow, address }) {
                 fontWeight={500}
                 lineHeight={'145.23%'}
                 color={'#2172E5'}
-                href={'https://bscscan.com/address/' + address}
+                href={'https://forms.gle/DgMuQsYHiw14uBiVA'}
                 target="_blank"
               >
-                View {type === 'token' ? 'token' : 'pair'} contract on BscScan
+                List your token on BSCswap
               </Link>
             </Hover>
             <RowBetween style={{ marginTop: '20px' }}>
@@ -92,10 +94,10 @@ export default function Warning({ type, show, setShow, address }) {
                 fontWeight={500}
                 lineHeight={'145.23%'}
                 color={'#2172E5'}
-                href={'https://bscscan.com/address/' + address}
+                href={'https://forms.gle/DgMuQsYHiw14uBiVA'}
                 target="_blank"
               >
-                View {type === 'token' ? 'token' : 'pair'} contract on BscScan
+                List your token on BSCswap
               </Link>
             </Hover>
             <ButtonDark color={'#f82d3a'} style={{ minWidth: '140px' }} onClick={() => setShow(false)}>
