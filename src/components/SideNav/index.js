@@ -189,6 +189,11 @@ function SideNav({ history }) {
               </Link>
             </HeaderText>
             <HeaderText>
+              <Link href="https://www.coingecko.com/en/exchanges/bscswap" target="_blank">
+                CoinGecko
+              </Link>
+            </HeaderText>
+            <HeaderText>
               <Link href="https://coinmarketcap.com/exchanges/bscswap" target="_blank">
                 CoinMarketCap
               </Link>
