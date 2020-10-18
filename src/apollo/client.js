@@ -4,7 +4,7 @@ import { HttpLink } from 'apollo-link-http'
 
 export const client = new ApolloClient({
   link: new HttpLink({
-    uri: 'https://subgraph.bscswap.com/subgraphs/name/bscswap/bscswap-subgraph'
+    uri: 'https://testnet-subgraph.bscswap.com/subgraphs/name/bscswap/bscswap-subgraph'
   }),
   cache: new InMemoryCache(),
   shouldBatch: true
@@ -12,7 +12,7 @@ export const client = new ApolloClient({
 
 export const healthClient = new ApolloClient({
   link: new HttpLink({
-    uri: 'https://subgraph.bscswap.com/index-node/graphql'
+    uri: 'https://testnet-subgraph.bscswap.com/index-node/graphql'
   }),
   cache: new InMemoryCache(),
   shouldBatch: true
@@ -20,7 +20,7 @@ export const healthClient = new ApolloClient({
 
 export const blockClient = new ApolloClient({
   link: new HttpLink({
-    uri: 'https://subgraph.bscswap.com/subgraphs/name/bscswap/bsc-blocks-timestamp'
+    uri: 'https://testnet-subgraph.bscswap.com/subgraphs/name/bscswap/bsc-blocks-timestamp'
   }),
   cache: new InMemoryCache()
 })

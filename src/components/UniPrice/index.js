@@ -24,9 +24,9 @@ function formatPercent(rawPercent) {
 }
 
 export default function UniPrice() {
-  const daiPair = usePairData('0xf3010261b58b2874639ca2e860e9005e3be5de0b')
-  const busdPair = usePairData('0x1ebf0ee99971c6269062c3b480e8e23b7a74756b')
-  const usdtPair = usePairData('0x12e048d01535e2b49675d22078f64fd2307d8a0c')
+  const daiPair = usePairData('0x315e14d384ae9c216b2a97b93f29f5c6497ded85')
+  const busdPair = usePairData('0xc7ce7c885c7e29d913cb03a649bef6883c86d27d')
+  const usdtPair = usePairData('0xf002991276611307df14040e4a3ea5362223a8cd')
 
   const totalLiquidity = useMemo(() => {
     return daiPair && busdPair && usdtPair
@@ -34,7 +34,7 @@ export default function UniPrice() {
       : 0
   }, [daiPair, busdPair, usdtPair])
 
-  const daiPerBnb = daiPair ? parseFloat(daiPair.token0Price).toFixed(2) : '-'
+  const daiPerBnb = daiPair ? parseFloat(daiPair.token1Price).toFixed(2) : '-'
   const busdPerBnb = busdPair ? parseFloat(busdPair.token1Price).toFixed(2) : '-'
   const usdtPerBnb = usdtPair ? parseFloat(usdtPair.token0Price).toFixed(2) : '-'
 

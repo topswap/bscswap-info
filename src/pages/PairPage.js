@@ -220,7 +220,7 @@ function PairPage({ pairAddress, history }) {
             style={{ width: 'fit-content' }}
             color={backgroundColor}
             external
-            href={'https://bscscan.com/address/' + pairAddress}
+            href={'https://testnet.bscscan.com/address/' + pairAddress}
           >
             <Text style={{ marginLeft: '.15rem' }} fontSize={'14px'} fontWeight={400}>
               ({pairAddress.slice(0, 8) + '...' + pairAddress.slice(36, 42)})
@@ -480,7 +480,7 @@ function PairPage({ pairAddress, history }) {
                     </AutoRow>
                   </Column>
                   <ButtonLight color={backgroundColor}>
-                    <Link color={backgroundColor} external href={'https://bscscan.com/address/' + pairAddress}>
+                    <Link color={backgroundColor} external href={'https://testnet.bscscan.com/address/' + pairAddress}>
                       View on BscScan ↗
                     </Link>
                   </ButtonLight>
