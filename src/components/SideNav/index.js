@@ -189,6 +189,11 @@ function SideNav({ history }) {
               </Link>
             </HeaderText>
             <HeaderText>
+              <Link href="https://dappradar.com/binance-smart-chain/exchanges/bscswap" target="_blank">
+                DappRadar
+              </Link>
+            </HeaderText>
+            <HeaderText>
               <Link href="https://www.coingecko.com/en/exchanges/bscswap" target="_blank">
                 CoinGecko
               </Link>
