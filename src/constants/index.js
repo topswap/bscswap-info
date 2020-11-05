@@ -40,6 +40,8 @@ export const OVERVIEW_TOKEN_BLACKLIST = [
   '0xc410b2c84ff954b5ee3dd1b0a0d3b4a8436e6e55',
   '0xe8c4b7a8b95e14981ca4e5fd53f7c219754e8392',
   '0x222d13dceb7820ae1e928a8c527c4f8e4c0ffa8b',
+  '0x3d9bf3fddc3513bf103a70e9b499e99b99373dd2',
+  '0x9c2d7c8231e00b8e99b24825b60bc4485e05208f',
 ]
 
 // pair blacklist
@@ -81,6 +83,10 @@ export const PAIR_BLACKLIST = [
   '0xe6dcb4cac22b4e591d6e5d8eeb61600a2158b1dc',
   '0x27c5b858807d42d7a835cfe6c00b8fe217947023',
   '0xdb740f15629d07086b13fab14e49a674721199ff',
+  '0x9c79ad77194127148f1a7205c470e47988c0c119',
+  '0x51c03563fad9a31bde556258d121d2c61ddcb670',
+  '0xc9c1cdb1ad05900d3de6e627a555527eb5b57888',
+  '0x0cf65da40aacaa60ec6d28eac4e778375308af49',
 ]
 
 /**
