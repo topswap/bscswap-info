@@ -12,7 +12,7 @@ export const client = new ApolloClient({
 
 export const healthClient = new ApolloClient({
   link: new HttpLink({
-    uri: 'https://subgraph.bscswap.com/index-node/graphql'
+    uri: 'https://api.bscgraph.org/graphql'
   }),
   cache: new InMemoryCache(),
   shouldBatch: true
@@ -20,7 +20,7 @@ export const healthClient = new ApolloClient({
 
 export const blockClient = new ApolloClient({
   link: new HttpLink({
-    uri: 'https://subgraph.bscswap.com/subgraphs/name/bscswap/bsc-blocks-timestamp'
+    uri: 'https://subgraph.bscswap.com/subgraphs/name/bscswap/bsc-blocks'
   }),
   cache: new InMemoryCache()
 })
